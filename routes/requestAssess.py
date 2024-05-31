@@ -59,4 +59,4 @@ async def get_users(userId: str):
     db = DatabaseConnection("Users")
     users = db.get_documents_by_attribute("supervisor", userId,["user_id","name"])
     print(users)
-    return users
+    return users 
