@@ -11,25 +11,29 @@ class Results(BaseModel):
     neuroticism: float
 
 class Employee(BaseModel):
-    supervisor: str
-    position: str
     name: str
     user_id: str
     email: str
+    supervisor: str
+    position: str
+    department: str
 
 class User(BaseModel):
     user_id: str
     name: str
     password:str
     email:str
-    position: str
+    position: Optional[str]
     attempts: Optional[int]
     supervisor: Optional[str]
     requested: bool
+    observed: bool
+    allowed_assess: bool
     self_answers: Optional[List[int]]
     supervisor_answers: Optional[List[int]]
-    potential:float
-    department:str
+    potential:Optional[float] 
+    department:Optional[str]
+    admin: bool
 
 class Admin(BaseModel):
     user_id: str
