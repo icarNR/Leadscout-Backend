@@ -20,7 +20,11 @@ class DatabaseConnection:
         self.db = self.client.Cluster0
         self.collection = self.db[collection_name]
         #self.collection.drop()
-        
+
+    def close(self):
+        # Close the connection to the database
+        self.client.close()
+           
     def add_document(self, document):
         try:
             result = self.collection.insert_one(document)
@@ -58,6 +62,17 @@ class DatabaseConnection:
             document = self.collection.find_one({"_id": ObjectId(document_id)})
             if document is not None:
                 print("Document found: ", document)
+                return document
+            else:
+                print("No documents matched the filter.")
+        except Exception as e:
+            print("An error occurred while finding the document: ", e)
+    
+    def get_document_by_attribute(self, attribute, value):
+        try:
+            document = self.collection.find_one({attribute: value})
+            if document is not None:
+                print("Document found by attribute: ", document)
                 return document
             else:
                 print("No documents matched the filter.")

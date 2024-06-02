@@ -128,12 +128,19 @@ async def create_document(userID,name):
     results_instance=User(
         user_id= userID,
         name=name,
+        password='0000',
+        email='123@gmail.com',
         position="Senior Softweare Engineer",
         attempts= 0,
         supervisor= "001",
         requested= False,
+        observed= 0,
+        allowed_assess= False,
         self_answers= None,
-        supervisor_answers= None
+        supervisor_answers= None,
+        potential=None,
+        department="IT",
+        admin=False
         )
     print(results_instance)
     existing =db.find_id_by_attribute("user_id",userID)
