@@ -22,19 +22,19 @@ async def create_document(userID,ntype):
     finally:
         db.close()
     
-    db = DatabaseConnection("Notifications")
-    try:
-        instance=Notification(
-            sender_id = userID,
-            sender_name= name,
-            reciever_id= reciever_id ,
-            datetime= datetime.now(),
-            ntype= ntype,
-            viewed= False 
-            )
-        print(instance)
-        # db.add_document(results_instance.model_dump()) 
-    finally:
-        db.close()
+    # db = DatabaseConnection("Notifications")
+    # try:
+    #     instance=Notification(
+    #         sender_id = userID,
+    #         sender_name= name,
+    #         reciever_id= reciever_id ,
+    #         datetime= datetime.now(),
+    #         ntype= ntype,
+    #         viewed= False 
+    #         )
+    #     print(instance)
+    #     # db.add_document(results_instance.model_dump()) 
+    # finally:
+    #     db.close()
 
     
