@@ -37,6 +37,8 @@ async def submit_assessment(assessment_answers: AssessmentAnswers):
     if(assessment_answers.user_id==assessment_answers.assessed_id):
         instance.self_answers=assessment_answers.answers  #set self_answers
         instance.attempts+=1
+        instance.allowed_assess=False
+        instance.requested=False
     else:
         instance.supervisor_answers=assessment_answers.answers  #set supervisor_answers
 

@@ -50,9 +50,10 @@ class Supervisor(BaseModel):
     supervisor_answers: Optional[List[int]]
 
 class Notification(BaseModel):
-    user_id: str
+    sender_id: str
     name: str
-    supervisor: Optional[str]
-    date: datetime
+    reciever_id: Optional[str]
+    datetime: datetime
     ntype: str 
+    viewed: bool
     

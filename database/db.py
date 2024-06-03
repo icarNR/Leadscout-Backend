@@ -91,6 +91,18 @@ class DatabaseConnection:
         except Exception as e:
             print("An error occurred while finding the document: ", e)
     
+    def get_attribute_by_attribute(self, sattribute, value, fattribute):
+        try:
+            document = self.collection.find_one({sattribute: value})
+            if document is not None:
+                print("Document found: ", str(document[fattribute]))
+                return str(document[fattribute]) # return the the document
+            else:
+                print("No documents matched the filter.")
+                return None  # return None if no document is found
+        except Exception as e:
+            print("An error occurred while finding the document: ", e)
+    
     def delete_document_by_id(self, document_id):
         try:
             result = self.collection.delete_one({"_id": ObjectId(document_id)})
