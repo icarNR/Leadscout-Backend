@@ -20,7 +20,11 @@ class DatabaseConnection:
         self.db = self.client.Cluster0
         self.collection = self.db[collection_name]
         #self.collection.drop()
-        
+
+    def close(self):
+        # Close the connection to the database
+        self.client.close()
+           
     def add_document(self, document):
         try:
             result = self.collection.insert_one(document)
@@ -63,6 +67,17 @@ class DatabaseConnection:
                 print("No documents matched the filter.")
         except Exception as e:
             print("An error occurred while finding the document: ", e)
+    
+    def get_document_by_attribute(self, attribute, value):
+        try:
+            document = self.collection.find_one({attribute: value})
+            if document is not None:
+                print("Document found by attribute: ", document)
+                return document
+            else:
+                print("No documents matched the filter.")
+        except Exception as e:
+            print("An error occurred while finding the document: ", e)
 
     def find_id_by_attribute(self, attribute, value):
         try:
@@ -70,6 +85,18 @@ class DatabaseConnection:
             if document is not None:
                 print("Document found: ", str(document["_id"]))
                 return str(document["_id"]) # return the the document
+            else:
+                print("No documents matched the filter.")
+                return None  # return None if no document is found
+        except Exception as e:
+            print("An error occurred while finding the document: ", e)
+    
+    def get_attribute_by_attribute(self, sattribute, value, fattribute):
+        try:
+            document = self.collection.find_one({sattribute: value})
+            if document is not None:
+                print("Document found: ", str(document[fattribute]))
+                return str(document[fattribute]) # return the the document
             else:
                 print("No documents matched the filter.")
                 return None  # return None if no document is found
