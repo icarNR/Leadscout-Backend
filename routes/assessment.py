@@ -37,6 +37,8 @@ async def submit_assessment(assessment_answers: AssessmentAnswers):
     if(assessment_answers.user_id==assessment_answers.assessed_id):
         instance.self_answers=assessment_answers.answers  #set self_answers
         instance.attempts+=1
+        instance.allowed_assess=False
+        instance.requested=False
     else:
         instance.supervisor_answers=assessment_answers.answers  #set supervisor_answers
 
@@ -128,12 +130,19 @@ async def create_document(userID,name):
     results_instance=User(
         user_id= userID,
         name=name,
+        password='0000',
+        email='123@gmail.com',
         position="Senior Softweare Engineer",
         attempts= 0,
         supervisor= "001",
         requested= False,
+        observed= 0,
+        allowed_assess= False,
         self_answers= None,
-        supervisor_answers= None
+        supervisor_answers= None,
+        potential=None,
+        department="IT",
+        admin=False
         )
     print(results_instance)
     existing =db.find_id_by_attribute("user_id",userID)
