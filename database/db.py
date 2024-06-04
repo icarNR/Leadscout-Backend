@@ -1,11 +1,15 @@
+
+from typing import Optional,List
 from pymongo import MongoClient, errors
 import sys
-from models.user_model import User,Results
+from models.user_model import User,Results,SignupRequest
 from bson import ObjectId
-from models.user_model import User, Results
+from passlib.context import CryptContext
+
 
 class DatabaseConnection:
     def __init__(self,collection_name):
+        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         try:
             # Replace the placeholder data with your actual Atlas connection string
             atlas_connection_string = "mongodb+srv://nisalRavindu:tonyStark#117@cluster0.wsf6jk3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -159,25 +163,64 @@ class DatabaseConnection:
             print("An error occurred while getting the documents: ", e)
 
 
-# document_id = document = db.find_document_by_attribute(attribute, value)  # replace with your document's _id
-# value = db.get_attribute_value(document_id, attribute)
-# answers=[2] * 44
-# user = User(
-#     user_id="001",
-#     attempts=0,  # replace with actual number of attempts
-#     supervisor="002",  # replace with actual supervisor if any
-#     requested=False,  # replace with actual requested status
-#     answers=answers,
-#     results=Results(
-#         Openness=0,
-#         Conscientiousness=0,
-#         Extraversion=0,
-#         Agreeableness=0,
-#         Neuroticism=0,
-#     )
-# )
-# db = DatabaseConnection("users")
-# db.update_document(db.find_document_by_attribute("user_id","001"), "answers", answers)
+##User-related operations
+ 
+    async def create_user(self, user_id: str, name: str, email: str, password: str, 
+                      position: Optional[str] = None, attempts: Optional[int] = 0,
+                      supervisor: Optional[str] = None, requested: bool = False,
+                      observed: bool = False, allowed_assess: bool = False,
+                      self_answers: Optional[List[int]] = None,
+                      supervisor_answers: Optional[List[int]] = None,
+                      potential: Optional[float] = None, department: Optional[str] = None,
+                      admin: bool = False) -> User:
+        if self_answers is None:
+            self_answers = []
+        if supervisor_answers is None:
+            supervisor_answers = []
+            hashed_password = self.pwd_context.hash(password)
+            user_instance = User(
+                        user_id=user_id,
+                        name=name,
+                        email=email,
+                        hashed_password=hashed_password,
+                        position=position,
+                        attempts=attempts,
+                        supervisor=supervisor,
+                        requested=requested,
+                        observed=observed,
+                        allowed_assess=allowed_assess,
+                        self_answers=self_answers,
+                        supervisor_answers=supervisor_answers,
+                        potential=potential,
+                        department=department,
+                        admin=admin
+                        )
+            
+            result = self.collection.insert_one(user_instance.dict())
+            return user_instance
+    
+    
+    
+    async def get_user(self, email: str) -> Optional[User]:
+        """Get a user by their email."""
+        user_data = self.collection.find_one({"email": email})
+        if user_data:
+            # Convert MongoDB's ObjectId to str if it's present in the document
+            if "_id" in user_data:
+                user_data["user_id"] = str(user_data.pop("_id"))
+            return User(**user_data)
+        return None
+    
 
-# # Insert the User object into the MongoDB database
-# db.add_document(user.model_dump())
+    
+    
+        
+    async def authenticate_user(self, email: str, password: str) -> Optional[User]:
+        """Authenticate a user by email and password."""
+        user = await self.get_user(email)
+        if not user:
+            return None
+        if not self.pwd_context.verify(password, user.hashed_password):
+            return None
+        return User
+
