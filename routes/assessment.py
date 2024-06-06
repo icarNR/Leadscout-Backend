@@ -16,11 +16,11 @@ class AssessmentAnswers(BaseModel):
 def sum_of_indices(lst, indices):
     return sum(lst[i] for i in indices if i < len(lst))
 
-def cal_extro(lst) : return (sum_of_indices(lst,[0,10,15,25,35])-sum_of_indices(lst,[5,20,30]))/(10)
-def cal_agree(lst) : return (sum_of_indices(lst,[6,16,21,31,41])-sum_of_indices(lst,[1,11,26,36]))/(5)
-def cal_consc(lst) : return (sum_of_indices(lst,[2,12,27,32,37])-sum_of_indices(lst,[7,17,22,42]))/(5)
-def cal_neuro(lst) : return (sum_of_indices(lst,[3,13,18,28,38])-sum_of_indices(lst,[8,23,33]))/(10)
-def cal_openn(lst) : return(sum_of_indices(lst,[4,9,14,19,24,29,39,43])-sum_of_indices(lst,[34,40]))/(30)
+def cal_extro(lst) : return (sum_of_indices(lst,[0,10,15,25,35])-sum_of_indices(lst,[5,20,30])+10)/(22+10)
+def cal_agree(lst) : return (sum_of_indices(lst,[6,16,21,31,41])-sum_of_indices(lst,[1,11,26,36])+15)/(21+15)
+def cal_consc(lst) : return (sum_of_indices(lst,[2,12,27,32,37])-sum_of_indices(lst,[7,17,22,42])+15)/(21+15)
+def cal_neuro(lst) : return (sum_of_indices(lst,[3,13,18,28,38])-sum_of_indices(lst,[8,23,33])+10)/(22+10)
+def cal_openn(lst) : return (sum_of_indices(lst,[4,9,14,19,24,29,39,43])-sum_of_indices(lst,[34,40])+2)/(38+2)
 
 
 @router.post("/submit_assessment/")
@@ -55,11 +55,11 @@ async def submit_assessment(assessment_answers: AssessmentAnswers):
         Openness= round((cal_openn(instance.self_answers)*0.5+ cal_openn(instance.supervisor_answers)*0.5),2)*100
     elif instance.self_answers:
         print('both have not assesed')
-        Extraversion= round(cal_extro(instance.self_answers)*0.5,2)*100
-        Agreeableness= round(cal_agree(instance.self_answers)*0.5,2)*100
-        Conscientiousness= round(cal_consc(instance.self_answers)*0.5,2)*100
-        Neuroticism= round(cal_neuro(instance.self_answers)*0.5,2)*100
-        Openness= round(cal_openn(instance.self_answers)*0.5,2)*100
+        Extraversion= round(cal_extro(instance.self_answers),2)*100
+        Agreeableness= round(cal_agree(instance.self_answers),2)*100
+        Conscientiousness= round(cal_consc(instance.self_answers),2)*100
+        Neuroticism= round(cal_neuro(instance.self_answers),2)*100
+        Openness= round(cal_openn(instance.self_answers),2)*100
          
         # save to results
     db = DatabaseConnection("Results")
@@ -94,7 +94,7 @@ async def get_answers(userId :str):
         print(response)
         return response
     
-@router.get("/api/dual_assessment/{user_id}")
+@router.get("/api/assessment_status/{user_id}")
 async def get_dual_assessment(user_id: str):
     db = DatabaseConnection("Users")
     docId=db.find_id_by_attribute("user_id",user_id)
@@ -102,11 +102,14 @@ async def get_dual_assessment(user_id: str):
         document = db.get_document_by_id(docId)
         document.pop("_id", None)
         instance= User(**document)
-        dual_assessment = False
-        if(instance.supervisor_answers): #check if superviser assessed
-            dual_assessment = True 
+        self_assessment = False
+        supervisor_assessment = False
+        if(instance.self_answers): #check if superviser assessed
+            self_assessment = True 
+        if(instance.supervisor_answers):
+            supervisor_assessment=True
 
-    return {"dual_assessment": dual_assessment}
+    return {"self_assessment": self_assessment, "supervisor_assessment":supervisor_assessment }
 #----------------------------------------------------------------------------------------------------------
 @router.get("/get_answers")
 async def get_answers():
@@ -136,7 +139,7 @@ async def create_document(userID,name):
         attempts= 0,
         supervisor= "001",
         requested= False,
-        observed= 0,
+        observed= False,
         allowed_assess= False,
         self_answers= None,
         supervisor_answers= None,
