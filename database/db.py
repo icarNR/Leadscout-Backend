@@ -2,7 +2,7 @@
 from typing import Optional,List
 from pymongo import MongoClient, errors
 import sys
-from models.user_model import User,Results,SignupRequest
+from models.user_model import User,Results
 from bson import ObjectId
 from passlib.context import CryptContext
 
@@ -161,66 +161,21 @@ class DatabaseConnection:
                     return None  # return None if no documents are found
         except Exception as e:
             print("An error occurred while getting the documents: ", e)
-
-
-##User-related operations
- 
-    async def create_user(self, user_id: str, name: str, email: str, password: str, 
-                      position: Optional[str] = None, attempts: Optional[int] = 0,
-                      supervisor: Optional[str] = None, requested: bool = False,
-                      observed: bool = False, allowed_assess: bool = False,
-                      self_answers: Optional[List[int]] = None,
-                      supervisor_answers: Optional[List[int]] = None,
-                      potential: Optional[float] = None, department: Optional[str] = None,
-                      admin: bool = False) -> User:
-        if self_answers is None:
-            self_answers = []
-        if supervisor_answers is None:
-            supervisor_answers = []
-            hashed_password = self.pwd_context.hash(password)
-            user_instance = User(
-                        user_id=user_id,
-                        name=name,
-                        email=email,
-                        hashed_password=hashed_password,
-                        position=position,
-                        attempts=attempts,
-                        supervisor=supervisor,
-                        requested=requested,
-                        observed=observed,
-                        allowed_assess=allowed_assess,
-                        self_answers=self_answers,
-                        supervisor_answers=supervisor_answers,
-                        potential=potential,
-                        department=department,
-                        admin=admin
-                        )
             
-            result = self.collection.insert_one(user_instance.dict())
-            return user_instance
     
-    
-    
-    async def get_user(self, email: str) -> Optional[User]:
-        """Get a user by their email."""
-        user_data = self.collection.find_one({"email": email})
-        if user_data:
-            # Convert MongoDB's ObjectId to str if it's present in the document
-            if "_id" in user_data:
-                user_data["user_id"] = str(user_data.pop("_id"))
-            return User(**user_data)
-        return None
-    
+   
+
 
     
+    # async def get_user(self, email: str) -> Optional[User]:
+    #     """Get a user by their email."""
+    #     user_data = self.collection.find_one({"email": email})
+    #     if user_data:
+    #         # Convert MongoDB's ObjectId to str if it's present in the document
+    #         if "_id" in user_data:
+    #             user_data["user_id"] = str(user_data.pop("_id"))
+    #         return User(**user_data)
+    #     return None
     
         
-    async def authenticate_user(self, email: str, password: str) -> Optional[User]:
-        """Authenticate a user by email and password."""
-        user = await self.get_user(email)
-        if not user:
-            return None
-        if not self.pwd_context.verify(password, user.hashed_password):
-            return None
-        return User
-
+   

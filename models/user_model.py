@@ -59,11 +59,11 @@ class User(BaseModel):
         }
     
     
-class SignupRequest(BaseModel):
-    user_id: str
-    name:str
-    email: str
-    password: str    
+# class SignupRequest(BaseModel):
+#     user_id: str
+#     name:str
+#     email: str
+#     password: str    
 
 class Admin(BaseModel):
     user_id: str
