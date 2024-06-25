@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from typing import Optional, Dict, List
+from pydantic import BaseModel, Field
+from typing import Optional, Dict, List, Tuple
 from datetime import datetime
 
 class Results(BaseModel):
@@ -21,7 +21,7 @@ class Employee(BaseModel):
 class User(BaseModel):
     user_id: str
     name: str
-    password:str
+    hashed_password:str
     email:str
     position: Optional[str]
     attempts: Optional[int]
@@ -34,7 +34,7 @@ class User(BaseModel):
     potential:Optional[float] 
     department:Optional[str]
     admin: bool
-    # skills:
+    skills: Optional[List[Tuple[str, int]]]  = Field(default=None)
 
 class Admin(BaseModel):
     user_id: str

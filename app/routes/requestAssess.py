@@ -24,30 +24,30 @@ class AttemptResponse(BaseModel):
     allowed: Optional[bool] = False
 
 # Get the number of attempts and  requested flag for a user
-# @router.get("/api/users/{user_id}/attempts")
-# async def get_attempts(user_id: str):
-#     db=DatabaseConnection("Users")
-#     document=db.get_document_by_attribute("user_id",user_id)
-#     if document:
-#         # Extract the attributes from the document
-#         attempts = document.get("attempts", 0)
-#         requested = document.get("requested", False)
-#         allowed = document.get("allowed_assess", False)
-#         return AttemptResponse(attempts=attempts, requested=requested, allowed=allowed)
-#     else:
-#         raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
-
-# Get the number of attempts and  requested flag for a user
 @router.get("/api/users/{user_id}/attempts")
 async def get_attempts(user_id: str):
     db=DatabaseConnection("Users")
     document=db.get_document_by_attribute("user_id",user_id)
     if document:
         # Extract the attributes from the document
-        userInstance= User(**document)
-        return userInstance
-    else:
-        raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
+        attempts = document.get("attempts", 0)
+        requested = document.get("requested", False)
+        allowed = document.get("allowed_assess", False)
+        return AttemptResponse(attempts=attempts, requested=requested, allowed=allowed)
+    # else:
+    #     raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
+
+# Get the number of attempts and  requested flag for a user
+# @router.get("/api/users/{user_id}/attempts")
+# async def get_attempts(user_id: str):
+#     db=DatabaseConnection("Users")
+#     document=db.get_document_by_attribute("user_id",user_id)
+#     if document:
+#         # Extract the attributes from the document
+#         userInstance= User(**document)
+#         return userInstance
+#     else:
+#         raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
 
 
 
