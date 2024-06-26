@@ -1,8 +1,9 @@
+from http.client import HTTPException
 from fastapi import FastAPI,APIRouter
 from pydantic import BaseModel
 from datetime import datetime
-from services.db import DatabaseConnection
-from models.user_model import User, Results, Notification
+from app.services.db import DatabaseConnection
+from app.models.user_model import User, Results, Notification
 from typing import Optional, Dict, List
 
 router = APIRouter()

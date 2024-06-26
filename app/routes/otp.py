@@ -8,7 +8,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-from services.db import DatabaseConnection
+from app.services.db import DatabaseConnection
 import logging
 
 # Set up logging

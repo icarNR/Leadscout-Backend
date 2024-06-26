@@ -1,9 +1,9 @@
 from fastapi import FastAPI,APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
-from services.db import DatabaseConnection
+from app.services.db import DatabaseConnection
 from crorSetting import setup_cors
-from models.user_model import User, Results, Notification
+from app.models.user_model import User, Results, Notification
 router = APIRouter()
 # Call the function to set up CORS
 

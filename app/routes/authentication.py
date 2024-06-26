@@ -6,9 +6,9 @@ from starlette import status
 from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
 from motor.motor_asyncio import AsyncIOMotorClient
-from services import db
-from services.db import DatabaseConnection
-from models.user_model import  User,Employee
+from app.services import db
+from app.services.db import DatabaseConnection
+from app.models.user_model import  User,Employee
 from .security import create_access_token, get_current_user, create_refresh_token
 
 

@@ -1,7 +1,7 @@
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
-from models.user_model import User
-from services.db import DatabaseConnection
+from app.models.user_model import User
+from app.services.db import DatabaseConnection
 from datetime import datetime, timedelta
 from typing import Optional
 from fastapi.security import OAuth2PasswordBearer

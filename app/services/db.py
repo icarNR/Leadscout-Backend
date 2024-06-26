@@ -2,7 +2,7 @@
 from typing import Optional,List
 from pymongo import MongoClient, errors
 import sys
-from models.user_model import User,Results
+from app.models.user_model import User,Results
 from bson import ObjectId
 from passlib.context import CryptContext
 
