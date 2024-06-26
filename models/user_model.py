@@ -1,5 +1,5 @@
 from ast import Str
-from pydantic import BaseModel,EmailStr
+from pydantic import BaseModel,EmailStr,Field
 from typing import Optional, Dict, List
 from datetime import datetime
 
@@ -18,6 +18,7 @@ class Employee(BaseModel):
     supervisor: str
     position: str
     department: str
+    type: str
 
 class User(BaseModel):
     user_id: str
@@ -34,36 +35,12 @@ class User(BaseModel):
     supervisor_answers: Optional[List[int]] = []
     potential: Optional[float] = None
     department: Optional[str] = None
-    admin: bool = False
+    admin: bool 
+    otp: Optional[str] = None
+    otp_expiration: Optional[datetime] = None
     
     
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "employee_id": "123",
-                "email": "test@test.com",
-                "hashed_password": "hashedpassword",
-                "name": "John Doe",
-                "position": "Developer",
-                "attempts": 3,
-                "supervisor": "Jane Smith",
-                "requested": True,
-                "observed": False,
-                "allowed_assess": True,
-                "self_answers": [],
-                "supervisor_answers": [],
-                "potential": True,
-                "department": "IT",
-                "admin": False
-            }
-        }
     
-    
-# class SignupRequest(BaseModel):
-#     user_id: str
-#     name:str
-#     email: str
-#     password: str    
 
 class Admin(BaseModel):
     user_id: str
@@ -80,10 +57,10 @@ class Supervisor(BaseModel):
     supervisor_answers: Optional[List[int]]
 
 class Notification(BaseModel):
-    sender_id: str
-    name: str
-    reciever_id: Optional[str]
-    datetime: datetime
-    ntype: str 
-    viewed: bool
-    
+    sender_id: str  
+    sender_name: str  
+    receiver_id: Optional[str]  
+    datetime: datetime  
+    ntype: str  
+    viewed: bool  
+  

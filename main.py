@@ -2,6 +2,7 @@ from routes.requestAssess import router as requestAssess_router
 from routes.assessment import router as assessment_router
 from routes.notifications import router as notification_router
 from routes.authentication import router as authentication_router
+from routes.otp import router as otp_router
 from fastapi import FastAPI
 from crorSetting import setup_cors
 
@@ -12,5 +13,6 @@ app = FastAPI()
 setup_cors(app)
 # app.include_router(requestAssess_router)
 # app.include_router(assessment_router)
-# app.include_router(notification_router)
+app.include_router(notification_router)
 app.include_router(authentication_router)
+app.include_router(otp_router)

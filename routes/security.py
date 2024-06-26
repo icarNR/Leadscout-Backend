@@ -54,19 +54,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
 
     return User(**user_data)
 
-# async def get_current_user_id(token: str = Depends(oauth2_scheme)) -> str:
-#     try:
-#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-#         email = payload.get("sub")
-#         if email is None:
-#             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
-#     except JWTError:
-#         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
 
-#     user_data = await db.get_document_by_attribute("email",email)
-#     if user_data is None:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-#     return str(user_data["_id"])
 
 

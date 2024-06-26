@@ -162,20 +162,20 @@ class DatabaseConnection:
         except Exception as e:
             print("An error occurred while getting the documents: ", e)
             
-    
-   
+    def get_doc_by_attribute(self, attribute, value):
+        try:
+            documents = list(self.collection.find({attribute: value}))
+            if documents:
+                print(f"Found {len(documents)} documents.")
+                return documents
+            else:
+                print("No documents matched the filter.")
+                return None  # return None if no documents are found
+        except Exception as e:
+            print("An error occurred while getting the documents: ", e)
 
 
+
     
-    # async def get_user(self, email: str) -> Optional[User]:
-    #     """Get a user by their email."""
-    #     user_data = self.collection.find_one({"email": email})
-    #     if user_data:
-    #         # Convert MongoDB's ObjectId to str if it's present in the document
-    #         if "_id" in user_data:
-    #             user_data["user_id"] = str(user_data.pop("_id"))
-    #         return User(**user_data)
-    #     return None
     
-        
-   
+

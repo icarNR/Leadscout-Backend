@@ -12,10 +12,6 @@ from models.user_model import  User,Employee
 from .security import create_access_token, get_current_user, create_refresh_token
 
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 router = APIRouter()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -44,33 +40,20 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     refresh_token = create_refresh_token(
         data={"sub": user.email}
     )
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer","role":"admin" if user.admin else "user"}
 
-
-
-@router.post("/checkMail")
-async def checkMail(email: str):
-    db=DatabaseConnection("Users")
-    user = await db.get_attribute_value_by_id({"email": email})
-    if user:
-        return {"exists": True}
-    else:
-        return {"exists": False}
-
-@router.get("/me")
-async def read_users_me(current_user: User = Depends(get_current_user)):
-    return current_user
 
 @router.get("/add_employee")
-async def create_document(userID,name,email,department):
+async def create_document(userID,name,email,department,type,supervisor):
     db = DatabaseConnection("Employees")
     results_instance=Employee(
         user_id= userID,
         name=name,
         position="Senior Softweare Engineer",
         email=email,
-        supervisor="John Doe",
-        department=department
+        supervisor=supervisor,
+        department=department,
+        type=type
         )
     print(results_instance)
     existing =db.find_id_by_attribute("user_id",userID)
@@ -114,7 +97,8 @@ async def create_document(
                 supervisor_answers= None,
                 potential=None,
                 department= instanceEmployee.department,
-                admin=False
+                admin=(instanceEmployee.type.lower()=="admin"),
+                
             )
             print(instanceUser)
             existing =dbUser.find_id_by_attribute("email",instanceUser.email)
@@ -139,7 +123,7 @@ async def create_document(
         if dbUser:
             dbUser.close()
         
-    # confirmation_token=create_confirmation_token(user_id=instanceUser.user_id)
+    
     
 
 
