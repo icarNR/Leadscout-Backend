@@ -17,6 +17,7 @@ class AssessmentAnswers(BaseModel):
     user_id: str
     assessed_id: str
     answers: List[Optional[int]]  # Optional because some questions
+
 class AverageResults(BaseModel):
     user_id: str
     openness: Optional[float]= 0
@@ -26,14 +27,17 @@ class AverageResults(BaseModel):
     neuroticism: Optional[float]= 0
     number:Optional[int]= 0
 
+
 def sum_of_indices(lst, indices):
     return sum(lst[i] for i in indices if i < len(lst))
+
 
 def cal_extro(lst) : return (sum_of_indices(lst,[0,10,15,25,35])-sum_of_indices(lst,[5,20,30])+10)/(22+10)
 def cal_agree(lst) : return (sum_of_indices(lst,[6,16,21,31,41])-sum_of_indices(lst,[1,11,26,36])+15)/(21+15)
 def cal_consc(lst) : return (sum_of_indices(lst,[2,12,27,32,37])-sum_of_indices(lst,[7,17,22,42])+15)/(21+15)
 def cal_neuro(lst) : return (sum_of_indices(lst,[3,13,18,28,38])-sum_of_indices(lst,[8,23,33])+10)/(22+10)
 def cal_openn(lst) : return (sum_of_indices(lst,[4,9,14,19,24,29,39,43])-sum_of_indices(lst,[34,40])+2)/(38+2)
+
 
 
 @router.post("/submit_assessment/")
@@ -57,6 +61,7 @@ async def submit_assessment(assessment_answers: AssessmentAnswers):
     else:
         instance.supervisor_answers=assessment_answers.answers  #set supervisor_answers
 
+
     #check if supervisor has assessed and calculate traits scores
     if instance.supervisor_answers and instance.self_answers:
         print('both have assesed')
@@ -65,6 +70,7 @@ async def submit_assessment(assessment_answers: AssessmentAnswers):
         Conscientiousness= round((cal_consc(instance.self_answers)*0.5+ cal_consc(instance.supervisor_answers)*0.5),2)*100
         Neuroticism= round((cal_neuro(instance.self_answers)*0.5+ cal_neuro(instance.supervisor_answers)*0.5),2)*100
         Openness= round((cal_openn(instance.self_answers)*0.5+ cal_openn(instance.supervisor_answers)*0.5),2)*100
+
         instance.observed=True
     elif instance.self_answers:
         print('both have not assesed')
@@ -115,6 +121,7 @@ async def get_answers(userId :str):
         print(response)
         return response
 
+
 @router.get("/send_average_results")
 async def get_answers():
     db = DatabaseConnection("Results")
@@ -141,6 +148,7 @@ async def get_dual_assessment(user_id: str):
             supervisor_assessment=True
 
     return {"self_assessment": self_assessment, "supervisor_assessment":supervisor_assessment }
+
 #----------------------------------------------------------------------------------------------------------
 @router.get("/get_answers")
 async def get_answers():
@@ -171,6 +179,7 @@ async def create_document(userID,name):
         supervisor= "001",
         requested= False,
         observed= False,
+
         allowed_assess= False,
         self_answers= None,
         supervisor_answers= None,

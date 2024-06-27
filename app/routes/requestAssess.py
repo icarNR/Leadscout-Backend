@@ -34,6 +34,7 @@ async def get_attempts(user_id: str):
         requested = document.get("requested", False)
         allowed = document.get("allowed_assess", False)
         return AttemptResponse(attempts=attempts, requested=requested, allowed=allowed)
+
     # else:
     #     raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
 
@@ -48,9 +49,6 @@ async def get_attempts(user_id: str):
 #         return userInstance
 #     else:
 #         raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
-
-
-
 
 
 # Set the `requested` flag to `true` for a user & send notifications
