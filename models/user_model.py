@@ -1,14 +1,14 @@
 from pydantic import BaseModel
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List,Tuple
 from datetime import datetime
 
 class Results(BaseModel):
     user_id: str
-    openness: float
-    conscientiousness: float
-    extraversion: float
-    agreeableness: float
-    neuroticism: float
+    openness: float = 0
+    conscientiousness: float = 0
+    extraversion: float = 0
+    agreeableness: float = 0
+    neuroticism: float = 0
 
 class Employee(BaseModel):
     name: str
@@ -34,6 +34,8 @@ class User(BaseModel):
     potential:Optional[float] 
     department:Optional[str]
     admin: bool
+    competency: float 
+    skills: List[Tuple[str, int]]
 
 class Admin(BaseModel):
     user_id: str
