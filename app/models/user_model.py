@@ -1,6 +1,6 @@
+from typing import Optional, Dict, List, Tuple
 from ast import Str
 from pydantic import BaseModel,EmailStr,Field
-from typing import Optional, Dict, List
 from datetime import datetime
 
 class Results(BaseModel):
@@ -18,30 +18,30 @@ class Employee(BaseModel):
     supervisor: str
     position: str
     department: str
-    type: str
+
+      
 
 class User(BaseModel):
     user_id: str
-    name: Optional[str] = None
-    hashed_password: str 
-    email: str
-    position: Optional[str] = None
-    attempts: Optional[int] = 0
-    supervisor: Optional[str] = None
-    requested: bool = False
-    observed: bool = False
-    allowed_assess: bool = False
-    self_answers: Optional[List[int]] = []
-    supervisor_answers: Optional[List[int]] = []
-    potential: Optional[float] = None
-    department: Optional[str] = None
-    admin: bool 
+    name: str
+    hashed_password:str
+    email:str
+    position: Optional[str]
+    attempts: Optional[int]
+    supervisor: Optional[str]
+    requested: bool
+    observed: bool
+    allowed_assess: bool
+    self_answers: Optional[List[int]]
+    supervisor_answers: Optional[List[int]]
+    potential:Optional[float] 
+    department:Optional[str]
+    admin: bool
+    skills: Optional[List[Tuple[str, int]]]  = Field(default=None)
     otp: Optional[str] = None
     otp_expiration: Optional[datetime] = None
     
     
-    
-
 class Admin(BaseModel):
     user_id: str
     name: str
@@ -57,10 +57,10 @@ class Supervisor(BaseModel):
     supervisor_answers: Optional[List[int]]
 
 class Notification(BaseModel):
-    sender_id: str  
-    sender_name: str  
-    receiver_id: Optional[str]  
-    datetime: datetime  
-    ntype: str  
-    viewed: bool  
-  
+    sender_id: str
+    sender_name: str
+    reciever_id: Optional[str]
+    datetime: datetime
+    ntype: str 
+    viewed: bool
+
