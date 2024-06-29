@@ -33,7 +33,7 @@ class User(BaseModel):
     supervisor_answers: Optional[List[int]]
     potential:Optional[float] 
     department:Optional[str]
-    admin: bool
+    role: Optional[str]
     skills: Optional[List[Tuple[str, int]]]  = Field(default=None)
 
 class Admin(BaseModel):

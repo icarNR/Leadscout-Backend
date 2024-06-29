@@ -1,9 +1,10 @@
-from fastapi import FastAPI,APIRouter
+from fastapi import FastAPI,APIRouter,Depends
 from pydantic import BaseModel
 from datetime import datetime
 from app.services.db import DatabaseConnection
 from app.models.user_model import User, Results, Notification
 from typing import Optional, Dict, List
+from app.services.auth import get_current_user  # Adjust the import path as needed
 
 router = APIRouter()
 # Call the function to set up CORS
@@ -25,7 +26,7 @@ class AttemptResponse(BaseModel):
 
 # Get the number of attempts and  requested flag for a user
 @router.get("/api/users/{user_id}/attempts")
-async def get_attempts(user_id: str):
+async def get_attempts(user_id: str, current_user: dict = Depends(get_current_user)):
     db=DatabaseConnection("Users")
     document=db.get_document_by_attribute("user_id",user_id)
     if document:
