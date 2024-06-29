@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
 from typing import Optional, Dict, List, Tuple
+from ast import Str
+from pydantic import BaseModel,EmailStr,Field
 from datetime import datetime
 
 class Results(BaseModel):
@@ -18,6 +19,8 @@ class Employee(BaseModel):
     position: str
     department: str
 
+      
+
 class User(BaseModel):
     user_id: str
     name: str
@@ -35,7 +38,10 @@ class User(BaseModel):
     department:Optional[str]
     role: Optional[str]
     skills: Optional[List[Tuple[str, int]]]  = Field(default=None)
-
+    otp: Optional[str] = None
+    otp_expiration: Optional[datetime] = None
+    
+    
 class Admin(BaseModel):
     user_id: str
     name: str
@@ -57,4 +63,4 @@ class Notification(BaseModel):
     datetime: datetime
     ntype: str 
     viewed: bool
-    
+

@@ -1,10 +1,14 @@
+from typing import Optional,List
 from pymongo import MongoClient, errors
 import sys
 from app.models.user_model import User,Results
 from bson import ObjectId
+from passlib.context import CryptContext
+
 
 class DatabaseConnection:
     def __init__(self,collection_name):
+        self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
         try:
             # Replace the placeholder data with your actual Atlas connection string
             atlas_connection_string = "mongodb+srv://nisalRavindu:tonyStark#117@cluster0.wsf6jk3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -46,8 +50,7 @@ class DatabaseConnection:
         except Exception as e:
             print("An error occurred while calculating averages: ", e)
             return None
-        
-        
+
     def close(self):
         # Close the connection to the database
         self.client.close()
@@ -185,26 +188,4 @@ class DatabaseConnection:
         except Exception as e:
             print("An error occurred while getting the documents: ", e)
 
-
-# document_id = document = db.find_document_by_attribute(attribute, value)  # replace with your document's _id
-# value = db.get_attribute_value(document_id, attribute)
-# answers=[2] * 44
-# user = User(
-#     user_id="001",
-#     attempts=0,  # replace with actual number of attempts
-#     supervisor="002",  # replace with actual supervisor if any
-#     requested=False,  # replace with actual requested status
-#     answers=answers,
-#     results=Results(
-#         Openness=0,
-#         Conscientiousness=0,
-#         Extraversion=0,
-#         Agreeableness=0,
-#         Neuroticism=0,
-#     )
-# )
-# db = DatabaseConnection("users")
-# db.update_document(db.find_document_by_attribute("user_id","001"), "answers", answers)
-
-# # Insert the User object into the MongoDB database
-# db.add_document(user.model_dump())
+            

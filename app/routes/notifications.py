@@ -24,6 +24,7 @@ async def create_document(
             name=instance.name
             reciever_id=instance.supervisor
     db.close()
+
     db = DatabaseConnection("Notifications")
     try:
         instance=Notification(
@@ -34,11 +35,11 @@ async def create_document(
             ntype= ntype,
             viewed= False 
             )
-        
         print(instance)
         db.add_document(instance.model_dump()) 
     finally:
         db.close()
+        
 
 @router.post("/add_employee_notification")
 async def create_document(
@@ -70,6 +71,7 @@ async def create_document(
     finally:
         db.close()
 
+        
 @router.post("/add_admin_notification")
 async def create_document(
     userID: str = Body(...),
@@ -100,3 +102,4 @@ async def create_document(
         finally:
             db.close()
         
+
