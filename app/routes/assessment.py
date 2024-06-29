@@ -5,6 +5,7 @@ from app.services.db import DatabaseConnection
 from crorSetting import setup_cors
 from app.models.user_model import User, Results, Notification
 import joblib
+from app.services.auth import get_current_user  # Adjust the import path as needed
 
 
 router = APIRouter()
@@ -185,7 +186,7 @@ async def create_document(userID,name):
         supervisor_answers= None,
         potential=None,
         department="IT",
-        admin=False
+        role="user"
         )
     print(results_instance)
     existing =db.find_id_by_attribute("user_id",userID)
