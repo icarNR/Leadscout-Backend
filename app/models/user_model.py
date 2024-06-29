@@ -18,7 +18,7 @@ class Employee(BaseModel):
     supervisor: str
     position: str
     department: str
-    type: str
+    role: str
 
 class User(BaseModel):
     user_id: str
@@ -35,7 +35,7 @@ class User(BaseModel):
     supervisor_answers: Optional[List[int]] = []
     potential: Optional[float] = None
     department: Optional[str] = None
-    admin: bool 
+    role: bool 
     otp: Optional[str] = None
     otp_expiration: Optional[datetime] = None
     
