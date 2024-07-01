@@ -35,16 +35,16 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(
-        data={"sub": user.email}
+        data={"sub": user.email,"role": "admin" if user.role else "user"}
     )
     refresh_token = create_refresh_token(
-        data={"sub": user.email}
+        data={"sub": user.email,"role": "admin" if user.role else "user"}
     )
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer","role":"admin" if user.admin else "user"}
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 @router.get("/add_employee")
-async def create_document(userID,name,email,department,type,supervisor):
+async def create_document(userID,name,email,department,role,supervisor):
     db = DatabaseConnection("Employees")
     results_instance=Employee(
         user_id= userID,
@@ -53,7 +53,7 @@ async def create_document(userID,name,email,department,type,supervisor):
         email=email,
         supervisor=supervisor,
         department=department,
-        type=type
+        role=role,
         )
     print(results_instance)
     existing =db.find_id_by_attribute("user_id",userID)
@@ -61,9 +61,7 @@ async def create_document(userID,name,email,department,type,supervisor):
         db.delete_document_by_id(existing)
     db.add_document(results_instance.model_dump())
 
-
-
-
+    return {"status": "success", "message": "Employee added successfully"}
 
 @router.post("/sign_up1")
 async def create_document(
@@ -97,7 +95,7 @@ async def create_document(
                 supervisor_answers= None,
                 potential=None,
                 department= instanceEmployee.department,
-                admin=(instanceEmployee.type.lower()=="admin"),
+                role=(instanceEmployee.role.lower()=="admin"),
                 
             )
             print(instanceUser)
