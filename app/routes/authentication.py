@@ -20,7 +20,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 @router.post("/refresh-token")
 async def refresh_token(current_user:User = Depends(get_current_user)):
     access_token = create_access_token(
-        data={"sub": current_user.email}
+        data={"sub": current_user.email,"role": "admin" if current_user.role else "user"}
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -122,8 +122,6 @@ async def create_document(
             dbUser.close()
         
     
-    
-
 
 async def authenticate_user(email: str, password: str) -> Optional[User]:
     """Authenticate a user by email and password."""
