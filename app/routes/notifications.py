@@ -1,6 +1,7 @@
-from fastapi import FastAPI,APIRouter, HTTPException
+from fastapi import Depends, FastAPI,APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
+from app.routes.security import get_current_user
 from app.services.db import DatabaseConnection
 from crorSetting import setup_cors
 from app.models.user_model import User, Results, Notification
