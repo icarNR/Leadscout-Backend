@@ -1,4 +1,3 @@
-
 from typing import Optional,List
 from pymongo import MongoClient, errors
 import sys
@@ -24,6 +23,33 @@ class DatabaseConnection:
         self.db = self.client.Cluster0
         self.collection = self.db[collection_name]
         #self.collection.drop()
+
+
+    def calculate_averages(self):
+        try:
+            pipeline = [
+                {
+                    "$group": {
+                        "_id": None,  # Grouping by null to calculate the average across all documents
+                        "extraversion": {"$avg": "$extraversion"},
+                        "agreeableness": {"$avg": "$agreeableness"},
+                        "conscientiousness": {"$avg": "$conscientiousness"},
+                        "neuroticism": {"$avg": "$neuroticism"},
+                        "openness": {"$avg": "$openness"}
+                    }
+                }
+            ]
+            result = list(self.collection.aggregate(pipeline))
+            if result:
+                # Remove the '_id' field from the result for cleaner output
+                result[0].pop('_id', None)
+                return result[0]
+            else:
+                print("No data found to calculate averages.")
+                return None
+        except Exception as e:
+            print("An error occurred while calculating averages: ", e)
+            return None
 
     def close(self):
         # Close the connection to the database
@@ -161,21 +187,5 @@ class DatabaseConnection:
                     return None  # return None if no documents are found
         except Exception as e:
             print("An error occurred while getting the documents: ", e)
+
             
-    def get_doc_by_attribute(self, attribute, value):
-        try:
-            documents = list(self.collection.find({attribute: value}))
-            if documents:
-                print(f"Found {len(documents)} documents.")
-                return documents
-            else:
-                print("No documents matched the filter.")
-                return None  # return None if no documents are found
-        except Exception as e:
-            print("An error occurred while getting the documents: ", e)
-
-
-
-    
-    
-
