@@ -102,4 +102,17 @@ async def create_document(
         finally:
             db.close()
         
+@router.get("/notifications",response_model=List[Notification])
+async def get_notifications(current_user: User = Depends(get_current_user)):
+    db = DatabaseConnection("Notifications")
+    try:
+        documents = db.get_doc_by_attribute("receiver_id",current_user.user_id)
+        if documents:
+            for document in documents:
+                document.pop("_id", None)
+            return [Notification(**document) for document in documents]
+        else:
+            raise HTTPException(status_code=404, detail="No notifications found")       
+    finally:
+        db.close()
 
