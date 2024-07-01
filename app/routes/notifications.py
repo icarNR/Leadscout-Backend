@@ -102,7 +102,7 @@ async def create_document(
             db.add_document(instance.model_dump()) 
         finally:
             db.close()
-            
+  
 from app.services.auth import get_current_user  # Adjust the import path as needed
 async def get_notifications(current_user: dict = Depends(get_current_user)):
     db = DatabaseConnection("Notifications")

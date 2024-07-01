@@ -3,6 +3,7 @@ from app.routes.assessment import router as assessment_router
 from app.routes.notifications import router as notification_router
 from app.routes.authentication import router as authentication_router
 from app.routes.otp import router as otp_router
+from app.routes.adminDashboard import router as adminDashboard_router
 from fastapi import FastAPI
 from crorSetting import setup_cors
 
@@ -16,3 +17,6 @@ app.include_router(assessment_router)
 app.include_router(notification_router)
 app.include_router(authentication_router)
 app.include_router(otp_router)
+app.include_router(adminDashboard_router)
+app.include_router(profile_router)
+

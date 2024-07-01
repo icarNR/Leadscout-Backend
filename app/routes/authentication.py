@@ -96,7 +96,6 @@ async def create_document(
                 potential=None,
                 department= instanceEmployee.department,
                 role= instanceEmployee.role,
-                
             )
             print(instanceUser)
             existing =dbUser.find_id_by_attribute("email",instanceUser.email)
@@ -121,7 +120,7 @@ async def create_document(
         if dbUser:
             dbUser.close()
         
-    
+
 
 async def authenticate_user(email: str, password: str) -> Optional[User]:
     """Authenticate a user by email and password."""

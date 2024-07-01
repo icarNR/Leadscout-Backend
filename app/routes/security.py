@@ -11,9 +11,6 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-
-load_dotenv()
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login_token")
 
 # JWT settings
@@ -52,7 +49,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate1 credentials")
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
-
     user_data =  db.get_document_by_attribute("email",email)
     print(user_data)
 
