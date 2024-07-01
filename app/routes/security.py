@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from app.models.user_model import User
@@ -7,6 +9,8 @@ from typing import Optional
 from fastapi.security import OAuth2PasswordBearer
 from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 load_dotenv()
 
