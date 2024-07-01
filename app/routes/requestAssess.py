@@ -26,7 +26,9 @@ class AttemptResponse(BaseModel):
 
 # Get the number of attempts and  requested flag for a user
 @router.get("/api/users/{user_id}/attempts")
-async def get_attempts(user_id: str, current_user: dict = Depends(get_current_user)):
+async def get_attempts(user_id: str):
+# async def get_attempts(user_id: str, current_user: dict = Depends(get_current_user)):
+
     db=DatabaseConnection("Users")
     document=db.get_document_by_attribute("user_id",user_id)
     if document:
@@ -39,17 +41,6 @@ async def get_attempts(user_id: str, current_user: dict = Depends(get_current_us
     # else:
     #     raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
 
-# Get the number of attempts and  requested flag for a user
-# @router.get("/api/users/{user_id}/attempts")
-# async def get_attempts(user_id: str):
-#     db=DatabaseConnection("Users")
-#     document=db.get_document_by_attribute("user_id",user_id)
-#     if document:
-#         # Extract the attributes from the document
-#         userInstance= User(**document)
-#         return userInstance
-#     else:
-#         raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
 
 
 # Set the `requested` flag to `true` for a user & send notifications

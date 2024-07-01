@@ -37,8 +37,9 @@ class User(BaseModel):
     department: Optional[str] = None
     role: Optional[str]
     skills: Optional[List[Tuple[str, int]]]  = Field(default=None)
-    otp: Optional[str] = None
-    otp_expiration: Optional[datetime] = None
+    # otp: Optional[str] = None
+    # otp_expiration: Optional[datetime] = None
+    
     
     
 class Admin(BaseModel):
