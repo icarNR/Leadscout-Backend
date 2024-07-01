@@ -1,8 +1,13 @@
 import jwt
 from fastapi import HTTPException, Security
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from dotenv import load_dotenv
+import os
 
-SECRET_KEY = "your_secret_key"  # Replace with your actual secret key
+load_dotenv()
+
+# JWT settings
+SECRET_KEY = os.getenv("SECRET_KEY")# Replace with your actual secret key
 ALGORITHM = "HS256"
 
 security = HTTPBearer()

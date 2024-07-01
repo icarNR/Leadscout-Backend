@@ -5,11 +5,15 @@ from app.services.db import DatabaseConnection
 from datetime import datetime, timedelta
 from typing import Optional
 from fastapi.security import OAuth2PasswordBearer
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login_token")
 
 # JWT settings
-SECRET_KEY =( "your-default-secret-key")
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 # TOKEN_EXPIRATION = 3600

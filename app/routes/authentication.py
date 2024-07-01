@@ -140,3 +140,16 @@ async def authenticate_user(email: str, password: str) -> Optional[User]:
         return user
     finally:
         dbUser1.close()
+
+
+# Get the number of attempts and  requested flag for a user
+@router.get("/{email}/user")
+async def get_attempts(email: str):
+    db=DatabaseConnection("Users")
+    document=db.get_document_by_attribute("email",email)
+    if document:
+        # Extract the attributes from the document
+        userInstance= User(**document)
+        return userInstance
+    else:
+        raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
