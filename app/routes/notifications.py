@@ -102,9 +102,9 @@ async def create_document(
             db.add_document(instance.model_dump()) 
         finally:
             db.close()
-        
-@router.get("/notifications",response_model=List[Notification])
-async def get_notifications(current_user: User = Depends(get_current_user)):
+            
+from app.services.auth import get_current_user  # Adjust the import path as needed
+async def get_notifications(current_user: dict = Depends(get_current_user)):
     db = DatabaseConnection("Notifications")
     try:
         documents = db.get_doc_by_attribute("receiver_id",current_user.user_id)

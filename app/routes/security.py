@@ -19,7 +19,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login_token")
 # JWT settings
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 # TOKEN_EXPIRATION = 3600
 
 # Initialize the database connection
@@ -52,7 +52,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate1 credentials")
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")
-    
 
     user_data =  db.get_document_by_attribute("email",email)
     print(user_data)
