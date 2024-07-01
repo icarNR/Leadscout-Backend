@@ -20,7 +20,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 @router.post("/refresh-token")
 async def refresh_token(current_user:User = Depends(get_current_user)):
     access_token = create_access_token(
-        data={"sub": current_user.email}
+        data={"sub": current_user.email,"role": current_user.role}
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -35,10 +35,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(
-        data={"sub": user.email,"role": "admin" if user.role else "user"}
+        data={"sub": user.email,"role": user.role}
     )
     refresh_token = create_refresh_token(
-        data={"sub": user.email,"role": "admin" if user.role else "user"}
+        data={"sub": user.email,"role": user.role}
     )
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
@@ -95,8 +95,7 @@ async def create_document(
                 supervisor_answers= None,
                 potential=None,
                 department= instanceEmployee.department,
-                role=(instanceEmployee.role.lower()=="admin"),
-                
+                role= instanceEmployee.role,
             )
             print(instanceUser)
             existing =dbUser.find_id_by_attribute("email",instanceUser.email)
@@ -121,8 +120,6 @@ async def create_document(
         if dbUser:
             dbUser.close()
         
-    
-    
 
 
 async def authenticate_user(email: str, password: str) -> Optional[User]:

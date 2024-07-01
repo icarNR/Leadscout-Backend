@@ -177,7 +177,7 @@ class DatabaseConnection:
             projection = {field: 1 for field in fields}
             projection["_id"] = 0  # Exclude _id from the result
             documents = self.collection.find(query, projection)
-            count = self.collection.count_documents(query)
+            count = self.collection.count_documents({attribute: value})
             # Check if any documents were found
             if documents is not None:
                     print(f"Found {count} documents.")
