@@ -39,6 +39,7 @@ class User(BaseModel):
     skills: Optional[List[Tuple[str, int]]]  = Field(default=None)
     
     
+    
 class Admin(BaseModel):
     user_id: str
     name: str
