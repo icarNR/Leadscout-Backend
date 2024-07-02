@@ -188,4 +188,10 @@ class DatabaseConnection:
         except Exception as e:
             print("An error occurred while getting the documents: ", e)
 
-            
+    def get_doc_by_attribute(self, attribute, value):
+        try:
+            documents = self.collection.find({attribute: value})
+            return list(documents) if documents else []
+        except Exception as e:
+            print("An error occurred while getting the documents: ", e)
+            return []    

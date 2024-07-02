@@ -35,10 +35,8 @@ class User(BaseModel):
     supervisor_answers: Optional[List[int]] = []
     potential: Optional[float] = None
     department: Optional[str] = None
-    role: Optional[str]
+    role: str
     skills: Optional[List[Tuple[str, int]]]  = Field(default=None)
-    otp: Optional[str] = None
-    otp_expiration: Optional[datetime] = None
     
     
 class Admin(BaseModel):

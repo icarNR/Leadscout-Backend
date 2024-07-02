@@ -4,7 +4,7 @@ from datetime import datetime
 from app.services.db import DatabaseConnection
 from app.models.user_model import User, Results, Notification
 from typing import Optional, Dict, List
-from app.services.auth import get_current_user  # Adjust the import path as needed
+from app.services.auth import get_current_user  
 
 router = APIRouter()
 # Call the function to set up CORS
