@@ -9,7 +9,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from app.services import db
 from app.services.db import DatabaseConnection
 from app.models.user_model import  User,Employee
-from .security import create_access_token, get_current_user, create_refresh_token
+from .security import create_access_token, create_refresh_token, get_current_user1
 
 
 router = APIRouter()
@@ -18,9 +18,9 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/refresh-token")
-async def refresh_token(current_user:User = Depends(get_current_user)):
+async def refresh_token(current_user:User = Depends(get_current_user1)):
     access_token = create_access_token(
-        data={"sub": current_user.email,"role":current_user.role }
+        data={"sub": current_user.email,"role":current_user.role,"user_id":current_user.user_id }
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -35,10 +35,10 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token = create_access_token(
-        data={"sub": user.email,"role":user.role }
+        data={"sub": user.email,"role":user.role,"user_id":user.user_id}
     )
     refresh_token = create_refresh_token(
-        data={"sub": user.email,"role":user.role}
+        data={"sub": user.email,"role":user.role,"user_id":user.user_id}
     )
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
@@ -139,13 +139,13 @@ async def authenticate_user(email: str, password: str) -> Optional[User]:
 
 
 # Get the number of attempts and  requested flag for a user
-@router.get("/{email}/user")
-async def get_attempts(email: str):
-    db=DatabaseConnection("Users")
-    document=db.get_document_by_attribute("email",email)
-    if document:
-        # Extract the attributes from the document
-        userInstance= User(**document)
-        return userInstance
-    else:
-        raise HTTPException(status_code=404, detail="User not found-attempts endpoint")
+# @router.get("/{email}/user")
+# async def get_attempts(email: str):
+#     db=DatabaseConnection("Users")
+#     document=db.get_document_by_attribute("email",email)
+#     if document:
+#         # Extract the attributes from the document
+#         userInstance= User(**document)
+#         return userInstance
+#     else:
+#         raise HTTPException(status_code=404, detail="User not found-attempts endpoint")

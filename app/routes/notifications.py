@@ -1,12 +1,13 @@
 from fastapi import Depends, FastAPI,APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
-from app.routes.security import get_current_user
+from app.routes.security import get_current_user1
 from app.services.db import DatabaseConnection
 from crorSetting import setup_cors
 from app.models.user_model import User, Results, Notification
 from datetime import datetime
 from fastapi import Body
+from app.services.auth import get_current_user
 
 router = APIRouter()
 
@@ -102,19 +103,25 @@ async def create_document(
             db.add_document(instance.model_dump()) 
         finally:
             db.close()
-        
-@router.get("/notifications",response_model=List[Notification])
-async def get_notifications(current_user: User = Depends(get_current_user)):
+            
+@router.get("/notifications", response_model=List[Notification])
+async def get_notifications(current_user: dict = Depends(get_current_user(required_roles=["user", "admin"]))):
     db = DatabaseConnection("Notifications")
     try:
-        documents = db.get_doc_by_attribute("reciever_id",current_user.user_id)
+        user_id = current_user.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=400, detail="User ID not found in current user")
+
+        documents = db.get_doc_by_attribute("reciever_id", user_id)
         if documents:
             for document in documents:
                 document.pop("_id", None)
             return [Notification(**document) for document in documents]
         else:
-            raise HTTPException(status_code=404, detail="No notifications found") 
-               
+            raise HTTPException(status_code=404, detail="No notifications found for user_id: {user_id}")
     finally:
-        db.close()
+        db.close()            
+        
+
+
 
