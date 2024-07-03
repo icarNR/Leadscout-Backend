@@ -62,3 +62,14 @@ class Notification(BaseModel):
     ntype: str 
     viewed: bool
 
+class OTPRequest(BaseModel):
+    name: str
+    email: EmailStr
+
+class OTPVerifyRequest(BaseModel):
+    email: EmailStr
+    otp: str
+
+class SetPasswordRequest(BaseModel):
+    email: EmailStr
+    password: str
