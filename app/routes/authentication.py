@@ -176,6 +176,7 @@ async def set_password(request: SetPasswordRequest):
     finally:
         dbUser.close()
         dbEmployee.close()
+        
 
 async def authenticate_user(email: str, password: str) -> Optional[User]:
     """Authenticate a user by email and password."""
@@ -190,3 +191,48 @@ async def authenticate_user(email: str, password: str) -> Optional[User]:
         return user
     finally:
         dbUser1.close()
+
+
+@router.post("/request_password_reset")
+async def request_password_reset(request: OTPRequest):
+    dbEmployee = DatabaseConnection("Employees")
+    try:
+        document = dbEmployee.get_document_by_attribute("email", request.email)
+        if document:
+            otp = generate_otp()
+            otp_cache[request.email] = {
+                "otp": otp,
+                "created_at": datetime.utcnow()
+            }
+            subject = "Your OTP Code for Password Reset"
+            body = f"Your OTP code is {otp}"
+            if send_email_via_smtp(request.email, subject, body):
+                return {"status": "success", "message": "OTP sent successfully"}
+            else:
+                raise HTTPException(status_code=500, detail="Failed to send OTP")
+        else:
+            return {"status": "error", "message": "Email not registered"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        dbEmployee.close()
+        
+@router.post("/reset_password")
+async def reset_password(request: SetPasswordRequest):
+    dbUser = DatabaseConnection("Users")
+    try:
+        if request.email not in otp_cache:
+            raise HTTPException(status_code=400, detail="OTP verification required")
+        
+        document = dbUser.get_document_by_attribute("email", request.email)
+        if document:
+            hashed_password = pwd_context.hash(request.password)
+            dbUser.update_attribute_by_id(document["_id"],"hashed_password", hashed_password)
+            del otp_cache[request.email]  # Remove OTP after successful password reset
+            return {"status": "success", "message": "Password reset successfully"}
+        else:
+            return {"status": "error", "message": "Email not registered"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+    finally:
+        dbUser.close()        
