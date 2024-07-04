@@ -63,7 +63,6 @@ class Notification(BaseModel):
     viewed: bool
 
 class OTPRequest(BaseModel):
-    name: str
     email: EmailStr
 
 class OTPVerifyRequest(BaseModel):
