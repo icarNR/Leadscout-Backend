@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI,APIRouter, HTTPException
+from fastapi import Depends, FastAPI,APIRouter, HTTPException,WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 from typing import List, Optional
 from app.routes.security import get_current_user1
@@ -10,6 +10,37 @@ from fastapi import Body
 from app.services.auth import get_current_user
 
 router = APIRouter()
+
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: List[WebSocket] = []
+        
+    async def connect(self, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections.append(websocket)
+        
+    def disconnect(self, websocket: WebSocket):
+        self.active_connections.remove(WebSocket)  
+            
+            
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
+
+    async def broadcast(self, message: str):
+        for connection in self.active_connections:
+            await connection.send_text(message)
+            
+manager= ConnectionManager()            
+            
+@router.websocket("/ws/notifications")
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            await manager.broadcast(data)
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)            
 
 @router.post("/add_supervisor_notification")
 async def create_document(
@@ -39,6 +70,7 @@ async def create_document(
             )
         print(instance)
         db.add_document(instance.model_dump()) 
+        await manager.broadcast(f"New Notification from supervisor {reciever_id}")
     finally:
         db.close()
         
@@ -70,6 +102,7 @@ async def create_document(
             )
         print(instance)
         db.add_document(instance.model_dump()) 
+        await manager.broadcast(f"New Notification from employee {superviseeID}")
     finally:
         db.close()
 
@@ -101,6 +134,7 @@ async def create_document(
                 )
             print(instance)
             db.add_document(instance.model_dump()) 
+            await manager.broadcast(f"New Notification from admin")
         finally:
             db.close()
             
