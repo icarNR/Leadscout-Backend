@@ -56,4 +56,14 @@ class Notification(BaseModel):
     datetime: datetime
     ntype: str 
     viewed: bool
+
+class Skill(BaseModel):
+    name: str
+    score: int
+
+class Criteria(BaseModel):
+    id: str
+    name: str
+    department: str
+    skills: List[Skill]
     
