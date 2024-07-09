@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException, APIRouter
+from fastapi import FastAPI,Depends, HTTPException, APIRouter
 from pymongo import MongoClient
 from pydantic import BaseModel
+from app.routes.security import get_current_user
 
 # Connect to MongoDB
 client = MongoClient("mongodb+srv://nisalRavindu:tonyStark#117@cluster0.wsf6jk3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -19,7 +20,7 @@ class TraitsData(BaseModel):
 
 # API endpoint to fetch profile data by user ID
 @router.get("/profile/{user_id}", response_model=TraitsData)
-async def get_profile(user_id: str):
+async def get_profile(user_id: str,current_user: dict = Depends(get_current_user(required_roles=["admin"]))):
     profile_data = results_collection.find_one({"user_id": user_id})
     if profile_data:
         traits_data = TraitsData(
