@@ -1,8 +1,10 @@
-from fastapi import FastAPI, HTTPException, Query, APIRouter
+from fastapi import FastAPI,Depends, HTTPException, Query, APIRouter
 from pydantic import BaseModel, ValidationError
 from typing import List, Optional, Tuple
 from pymongo import MongoClient
 import json
+from app.routes.security import get_current_user
+
 
 router = APIRouter()
 
@@ -23,7 +25,7 @@ class Leadership(BaseModel):
 
 # Endpoint to fetch unique departments
 @router.get("/departments", response_model=List[str])
-async def get_departments():
+async def get_departments(current_user: dict = Depends(get_current_user(required_roles=["admin"]))):
     try:
         departments = leadership_collection.distinct("department")
         departments = ["No Department" if dept is None else dept for dept in departments]
@@ -33,7 +35,7 @@ async def get_departments():
 
 # Endpoint to fetch unique skills    
 @router.get("/skills", response_model=List[str])
-async def get_skills():
+async def get_skills(current_user: dict = Depends(get_current_user(required_roles=["admin"]))):
     try:
         leadership_data = leadership_collection.find({}, {"skills": 1})
         unique_skills = set()
@@ -83,7 +85,8 @@ def calculate_competency_and_normalize(leader_skills, all_skills):
 @router.get("/src/component/admin/LeadershipTable/", response_model=List[Leadership])
 async def get_leadership_data(
     department: Optional[str] = Query(None),
-    session_data: Optional[str] = Query(None)
+    session_data: Optional[str] = Query(None),
+    current_user: dict = Depends(get_current_user(required_roles=["admin"]))
 ):
     try:
         query = {}
