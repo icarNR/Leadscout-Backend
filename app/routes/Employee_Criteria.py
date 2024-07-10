@@ -7,7 +7,7 @@ from models.user_model import Skill, Criteria
 router = APIRouter()
 
 # Connect to MongoDB
-client = MongoClient("mongodb+srv://nisalRavindu:tonyStark#117@cluster0.wsf6jk3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+client = MongoClient("mongodb+srv://nisalRavindu:tonyStark%23117@cluster0.wsf6jk3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = client['Cluster0']
 criteria_collection = db['Criteria']
 
@@ -27,15 +27,21 @@ def criteria_helper(criteria) -> Criteria:
 # Routes for Criteria
 @router.get("/criteria", response_model=List[Criteria])
 async def get_criteria():
-    criteria_list = criteria_collection.find()
-    return [criteria_helper(criteria) for criteria in criteria_list]
+    try:
+        criteria_list = criteria_collection.find()
+        return [criteria_helper(criteria) for criteria in criteria_list]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/criteria/{criteria_id}", response_model=Criteria)
 async def get_criteria_by_id(criteria_id: str):
-    criteria = criteria_collection.find_one({"criteria_id": criteria_id})
-    if criteria:
-        return criteria_helper(criteria)
-    raise HTTPException(status_code=404, detail=f"Criteria with id {criteria_id} not found")
+    try:
+        criteria = criteria_collection.find_one({"criteria_id": criteria_id})
+        if criteria:
+            return criteria_helper(criteria)
+        raise HTTPException(status_code=404, detail=f"Criteria with id {criteria_id} not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/criteriafilter", response_model=List[Criteria])
 async def get_criteria_filter(
@@ -48,20 +54,26 @@ async def get_criteria_filter(
     if search_id:
         query["criteria_id"] = search_id
 
-    criteria_list = criteria_collection.find(query)
-    return [criteria_helper(criteria) for criteria in criteria_list]
+    try:
+        criteria_list = criteria_collection.find(query)
+        return [criteria_helper(criteria) for criteria in criteria_list]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Routes for Skills
 @router.get("/skills/{criteria_id}", response_model=List[Skill])
 async def get_skills_by_criteria(criteria_id: str):
-    criteria = criteria_collection.find_one({"criteria_id": criteria_id})
-    if criteria:
-        skills = []
-        for skill in criteria.get("skills", []):
-            if isinstance(skill, list) and len(skill) == 2:
-                skills.append({"name": skill[0], "score": skill[1]})
-        return skills
-    raise HTTPException(status_code=404, detail=f"No skills found for criteria ID: {criteria_id}")
+    try:
+        criteria = criteria_collection.find_one({"criteria_id": criteria_id})
+        if criteria:
+            skills = []
+            for skill in criteria.get("skills", []):
+                if isinstance(skill, list) and len(skill) == 2:
+                    skills.append({"name": skill[0], "score": skill[1]})
+            return skills
+        raise HTTPException(status_code=404, detail=f"No skills found for criteria ID: {criteria_id}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Root welcome message
 @router.get("/")
